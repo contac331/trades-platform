@@ -1,0 +1,15 @@
+# Railway Deployment Configuration
+version: 2
+
+services:
+  api:
+    build:
+      commands:
+        - npm install --production
+    start:
+      command: npm start
+    environment:
+      NODE_ENV: production
+    healthcheck:
+      path: /api/health
+      interval: 30s
