@@ -2,7 +2,7 @@ services:
   - type: web
     runtime: node
     name: trades-platform
-    buildCommand: npm install && npm run build
+    buildCommand: npm run build
     startCommand: npm start
     plan: free
     envVars:
