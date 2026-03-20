@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
+const bcrypt = require('bcryptjs');
 
 // Load environment variables
 dotenv.config();
@@ -10,6 +11,12 @@ const app = express();
 
 // Import database connection
 const sequelize = require('./backend/config/database');
+
+// Import models
+const User = require('./backend/models/User');
+const Service = require('./backend/models/Service');
+const Booking = require('./backend/models/Booking');
+const Review = require('./backend/models/Review');
 
 // Import routes
 const authRoutes = require('./backend/routes/auth');
@@ -74,7 +81,6 @@ async function startServer() {
     
     // Create default admin user if it doesn't exist
     try {
-      const bcrypt = require('bcryptjs');
       const adminEmail = 'admin@example.com';
       const existingAdmin = await User.findOne({ where: { email: adminEmail } });
       
