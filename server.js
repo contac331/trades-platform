@@ -73,6 +73,44 @@ app.get('/api/test/users', async (req, res) => {
   }
 });
 
+// Test auth endpoint
+app.post('/api/test/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    console.log('Test login attempt:', email);
+    
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.json({
+        success: false,
+        message: 'User not found',
+        debug: { email, userExists: false }
+      });
+    }
+    
+    const isMatch = await user.matchPassword(password);
+    console.log('Password match result:', isMatch);
+    
+    res.json({
+      success: isMatch,
+      message: isMatch ? 'Login successful' : 'Invalid password',
+      debug: { 
+        email, 
+        userExists: true, 
+        passwordMatch: isMatch,
+        jwtSecret: process.env.JWT_SECRET ? 'SET' : 'NOT_SET'
+      }
+    });
+  } catch (error) {
+    console.error('Test login error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      debug: { jwtSecret: process.env.JWT_SECRET ? 'SET' : 'NOT_SET' }
+    });
+  }
+});
+
 // Serve static files from React app in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'frontend/build')));

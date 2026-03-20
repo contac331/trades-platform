@@ -18,7 +18,8 @@ exports.protect = async (req, res, next) => {
 
   try {
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key-for-development';
+    const decoded = jwt.verify(token, jwtSecret);
 
     // Get user from token
     req.user = await User.findByPk(decoded.id);
@@ -54,8 +55,9 @@ exports.authorize = (...roles) => {
 
 // Generate JWT Token
 const signToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE
+  const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key-for-development';
+  return jwt.sign({ id }, jwtSecret, {
+    expiresIn: process.env.JWT_EXPIRE || '30d'
   });
 };
 
