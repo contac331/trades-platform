@@ -7,6 +7,14 @@ const bcrypt = require('bcryptjs');
 // Load environment variables
 dotenv.config();
 
+// Ensure JWT_SECRET is available
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = 'trades-platform-secret-key-' + Date.now();
+  console.log('JWT_SECRET not found, using generated secret');
+} else {
+  console.log('JWT_SECRET loaded from environment');
+}
+
 const app = express();
 
 // Import database connection
