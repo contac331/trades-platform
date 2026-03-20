@@ -111,6 +111,49 @@ app.post('/api/test/login', async (req, res) => {
   }
 });
 
+// Quick admin login test (GET endpoint for easy testing)
+app.get('/api/test/admin-login', async (req, res) => {
+  try {
+    const email = 'admin@example.com';
+    const password = 'admin123';
+    
+    console.log('Testing admin login...');
+    
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.json({
+        success: false,
+        message: 'Admin user not found',
+        debug: { userExists: false }
+      });
+    }
+    
+    const isMatch = await user.matchPassword(password);
+    console.log('Admin password match result:', isMatch);
+    
+    res.json({
+      success: isMatch,
+      message: isMatch ? 'Admin login successful' : 'Admin password invalid',
+      debug: { 
+        userExists: true, 
+        passwordMatch: isMatch,
+        userId: user.id,
+        userRole: user.role,
+        hasPassword: !!user.password,
+        passwordLength: user.password ? user.password.length : 0,
+        jwtSecret: process.env.JWT_SECRET ? 'SET' : 'NOT_SET'
+      }
+    });
+  } catch (error) {
+    console.error('Admin login test error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      stack: error.stack
+    });
+  }
+});
+
 // Serve static files from React app in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'frontend/build')));
