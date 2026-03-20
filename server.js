@@ -48,29 +48,42 @@ app.use('/api/admin', adminRoutes);
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ 
-    status: 'OK', 
+    status: 'ok', 
     timestamp: new Date().toISOString(),
-    version: '1.0.1'
+    version: '1.0.0'
   });
 });
 
-// Serve static files from React build in production
+// Test endpoint to check users (temporary for debugging)
+app.get('/api/test/users', async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: ['id', 'name', 'email', 'role', 'createdAt']
+    });
+    res.json({
+      success: true,
+      count: users.length,
+      users: users
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Serve static files from React app in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'frontend', 'build')));
-  
-  // Handle client-side routing
+  app.use(express.static(path.join(__dirname, 'frontend/build')));
+
   app.get('*', (req, res) => {
-    // Don't serve index.html for API routes
-    if (req.path.startsWith('/api/')) {
-      return res.status(404).json({ message: 'API endpoint not found' });
-    }
-    res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
+    res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
   });
 }
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 
-// Database connection and server start
 async function startServer() {
   try {
     await sequelize.authenticate();
