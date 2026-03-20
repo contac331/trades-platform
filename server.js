@@ -12,12 +12,6 @@ const app = express();
 // Import database connection
 const sequelize = require('./backend/config/database');
 
-// Import models
-const User = require('./backend/models/User');
-const Service = require('./backend/models/Service');
-const Booking = require('./backend/models/Booking');
-const Review = require('./backend/models/Review');
-
 // Import routes
 const authRoutes = require('./backend/routes/auth');
 const serviceRoutes = require('./backend/routes/services');
@@ -75,6 +69,21 @@ async function startServer() {
   try {
     await sequelize.authenticate();
     console.log('Connected to SQLite database');
+    
+    // Import models after database connection
+    const User = require('./backend/models/User');
+    const Service = require('./backend/models/Service');
+    const Booking = require('./backend/models/Booking');
+    const Review = require('./backend/models/Review');
+    
+    // Define associations
+    User.hasMany(Service, { foreignKey: 'tradespersonId' });
+    User.hasMany(Review, { foreignKey: 'customer' });
+    Service.hasMany(Review, { foreignKey: 'service' });
+    Booking.hasOne(Review, { foreignKey: 'booking' });
+    Review.belongsTo(User, { foreignKey: 'customer', as: 'Customer' });
+    Review.belongsTo(Service, { foreignKey: 'service' });
+    Review.belongsTo(Booking, { foreignKey: 'booking' });
     
     await sequelize.sync();
     console.log('Database models synced');
