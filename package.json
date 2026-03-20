@@ -4,11 +4,11 @@
   "description": "Full-stack Trades Platform with React frontend and Node.js backend",
   "main": "server.js",
   "scripts": {
-    "build": "cd frontend && npm install && npm run build",
+    "build": "npm install && cd frontend && npm install && npm run build",
     "start": "node server.js",
     "dev": "concurrently \"cd backend && npm start\" \"cd frontend && npm start\"",
     "install-all": "cd backend && npm install && cd ../frontend && npm install",
-    "heroku-postbuild": "cd frontend && npm install && npm run build"
+    "heroku-postbuild": "npm install && cd frontend && npm install && npm run build"
   },
   "engines": {
     "node": ">=14.0.0",
