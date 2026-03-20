@@ -142,20 +142,29 @@ async function startServer() {
     // Create default admin user if it doesn't exist
     try {
       const adminEmail = 'admin@example.com';
-      const existingAdmin = await User.findOne({ where: { email: adminEmail } });
+      let existingAdmin = await User.findOne({ where: { email: adminEmail } });
       
       if (!existingAdmin) {
-        const hashedPassword = await bcrypt.hash('admin123', 12);
+        // Create new admin user - let the User model handle password hashing automatically
         await User.create({
           name: 'Admin User',
           email: adminEmail,
-          password: hashedPassword,
+          password: 'admin123', // Raw password - model will hash it
           role: 'admin',
           isVerified: true
         });
         console.log('Default admin user created');
       } else {
-        console.log('Admin user already exists');
+        // Check if existing admin can login (in case password was double-hashed)
+        const canLogin = await existingAdmin.matchPassword('admin123');
+        if (!canLogin) {
+          console.log('Fixing admin user password...');
+          // Update with raw password, let model hash it properly
+          await existingAdmin.update({ password: 'admin123' });
+          console.log('Admin user password fixed');
+        } else {
+          console.log('Admin user already exists and password is correct');
+        }
       }
     } catch (error) {
       console.error('Error creating admin user:', error);
