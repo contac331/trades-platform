@@ -14,7 +14,6 @@ const sequelize = require('./backend/config/database');
 // Import routes
 const authRoutes = require('./backend/routes/auth');
 const serviceRoutes = require('./backend/routes/services');
-const userRoutes = require('./backend/routes/users');
 const adminRoutes = require('./backend/routes/admin');
 
 // CORS configuration
@@ -37,7 +36,6 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/services', serviceRoutes);
-app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Health check
