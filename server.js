@@ -72,6 +72,29 @@ async function startServer() {
     await sequelize.sync();
     console.log('Database models synced');
     
+    // Create default admin user if it doesn't exist
+    try {
+      const bcrypt = require('bcryptjs');
+      const adminEmail = 'admin@example.com';
+      const existingAdmin = await User.findOne({ where: { email: adminEmail } });
+      
+      if (!existingAdmin) {
+        const hashedPassword = await bcrypt.hash('admin123', 12);
+        await User.create({
+          name: 'Admin User',
+          email: adminEmail,
+          password: hashedPassword,
+          role: 'admin',
+          isVerified: true
+        });
+        console.log('Default admin user created');
+      } else {
+        console.log('Admin user already exists');
+      }
+    } catch (error) {
+      console.error('Error creating admin user:', error);
+    }
+    
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV}`);
