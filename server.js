@@ -12,6 +12,12 @@ const app = express();
 // Import database connection
 const sequelize = require('./backend/config/database');
 
+// Import models
+const User = require('./backend/models/User');
+const Service = require('./backend/models/Service');
+const Booking = require('./backend/models/Booking');
+const Review = require('./backend/models/Review');
+
 // Import routes
 const authRoutes = require('./backend/routes/auth');
 const serviceRoutes = require('./backend/routes/services');
@@ -20,7 +26,7 @@ const adminRoutes = require('./backend/routes/admin');
 // CORS configuration
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.FRONTEND_URL, process.env.RENDER_EXTERNAL_URL] 
+    ? ['https://trades-platform.onrender.com', process.env.FRONTEND_URL, process.env.RENDER_EXTERNAL_URL] 
     : ['http://localhost:3000', 'http://127.0.0.1:3000'],
   credentials: true,
   optionsSuccessStatus: 200,
@@ -69,12 +75,6 @@ async function startServer() {
   try {
     await sequelize.authenticate();
     console.log('Connected to SQLite database');
-    
-    // Import models after database connection
-    const User = require('./backend/models/User');
-    const Service = require('./backend/models/Service');
-    const Booking = require('./backend/models/Booking');
-    const Review = require('./backend/models/Review');
     
     // Define associations
     User.hasMany(Service, { foreignKey: 'tradespersonId' });
