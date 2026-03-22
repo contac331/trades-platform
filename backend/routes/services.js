@@ -10,10 +10,9 @@ const router = express.Router();
 // @access  Public
 router.get('/', async (req, res) => {
   try {
-    // Build query options
+    // Build query options - simplified without include to avoid association issues
     let queryOptions = { 
-      where: { isActive: true },
-      include: [{ model: require('../models/User'), attributes: ['name', 'email'] }]
+      where: { isActive: true }
     };
 
     // Filter by category
