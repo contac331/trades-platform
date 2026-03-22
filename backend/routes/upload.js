@@ -8,8 +8,8 @@ const router = express.Router();
 
 // @desc    Upload service images
 // @route   POST /api/upload/services
-// @access  Private (Tradesperson only)
-router.post('/services', protect, authorize('tradesperson'), upload.array('images', 5), async (req, res) => {
+// @access  Private (Tradesperson or Admin)
+router.post('/services', protect, authorize('tradesperson', 'admin'), upload.array('images', 5), async (req, res) => {
   try {
     console.log('Upload request received');
     console.log('User:', req.user?.id, req.user?.role);

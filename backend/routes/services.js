@@ -118,8 +118,8 @@ router.get('/:id', async (req, res) => {
 
 // @desc    Create new service
 // @route   POST /api/services
-// @access  Private (Tradesperson only)
-router.post('/', protect, authorize('tradesperson'), [
+// @access  Private (Tradesperson or Admin)
+router.post('/', protect, authorize('tradesperson', 'admin'), [
   body('title').notEmpty().withMessage('Title is required'),
   body('description').notEmpty().withMessage('Description is required'),
   body('category').notEmpty().withMessage('Category is required'),

@@ -30,6 +30,7 @@ const Review = require('./backend/models/Review');
 const authRoutes = require('./backend/routes/auth');
 const serviceRoutes = require('./backend/routes/services');
 const adminRoutes = require('./backend/routes/admin');
+const uploadRoutes = require('./backend/routes/upload');
 
 // CORS configuration
 const corsOptions = {
@@ -52,6 +53,10 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/upload', uploadRoutes);
+
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

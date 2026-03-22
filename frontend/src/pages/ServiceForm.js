@@ -72,8 +72,8 @@ function ServiceForm() {
   ];
 
   useEffect(() => {
-    if (user?.role !== 'tradesperson') {
-      toast.error('Only tradespeople can manage services');
+    if (user?.role !== 'tradesperson' && user?.role !== 'admin') {
+      toast.error('Only tradespeople and admins can manage services');
       navigate('/dashboard');
       return;
     }
