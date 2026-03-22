@@ -87,6 +87,7 @@ async function startServer() {
     
     // Define associations
     User.hasMany(Service, { foreignKey: 'tradespersonId' });
+    Service.belongsTo(User, { foreignKey: 'tradespersonId' });
     User.hasMany(Review, { foreignKey: 'customer' });
     Service.hasMany(Review, { foreignKey: 'service' });
     Booking.hasOne(Review, { foreignKey: 'booking' });
