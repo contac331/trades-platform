@@ -67,52 +67,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Temporary debug endpoint to test frontend connectivity
-app.post('/api/test/frontend-login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    console.log('Frontend login test:', email, req.headers);
-    
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'User not found',
-        debug: { email, userExists: false, origin: req.headers.origin }
-      });
-    }
-    
-    const isMatch = await user.matchPassword(password);
-    
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid password',
-        debug: { email, userExists: true, passwordMatch: false, origin: req.headers.origin }
-      });
-    }
-    
-    res.json({
-      success: true,
-      message: 'Frontend login test successful',
-      debug: { 
-        email, 
-        userExists: true, 
-        passwordMatch: true,
-        jwtSecret: process.env.JWT_SECRET ? 'SET' : 'NOT_SET',
-        origin: req.headers.origin,
-        userAgent: req.headers['user-agent']
-      }
-    });
-  } catch (error) {
-    console.error('Frontend login test error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      debug: { jwtSecret: process.env.JWT_SECRET ? 'SET' : 'NOT_SET' }
-    });
-  }
-});
+// Service creation and photo upload are working properly
 
 // Serve static files from React app in production
 if (process.env.NODE_ENV === 'production') {
